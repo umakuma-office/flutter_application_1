@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/premium_screen.dart';
-import 'screens/calendar_screen.dart';
+import 'screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/navigation_state.dart';
 
@@ -43,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     const HomeScreen(), // 既存のHomeScreen
     const PremiumScreen(), // 新規作成必要
-    const CalendarScreen(), // ProfileScreenからCalendarScreenに変更
+    const ProfileScreen(), // 新規作成必要
   ];
 
   @override
@@ -63,8 +63,8 @@ class _MainScreenState extends State<MainScreen> {
             label: '商品リスト',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today), // アイコンをカレンダーに変更
-            label: 'カレンダー', // プロフィールからカレンダーに変更
+            icon: Icon(Icons.person_outline),
+            label: 'プロフィール',
           ),
         ],
         currentIndex: navigationState.selectedIndex,
