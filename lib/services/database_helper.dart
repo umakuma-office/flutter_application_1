@@ -203,6 +203,17 @@ class DatabaseHelper {
     }
   }
 
+  // アイテムの並び順を更新するメソッドを追加
+  Future<void> updateItemOrder(String id, int position) async {
+    final db = await database;
+    await db.update(
+      'periodic_items', // テーブル名を'items'から'periodic_items'に修正
+      {'position': position},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<void> deleteItem(String id) async {
     final db = await database;
     try {

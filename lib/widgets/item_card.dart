@@ -4,8 +4,13 @@ import '../screens/edit_item_screen.dart';
 
 class ItemCard extends StatelessWidget {
   final Map<String, dynamic> item;
+  final Widget? trailing;
 
-  const ItemCard({super.key, required this.item});
+  const ItemCard({
+    super.key,
+    required this.item,
+    this.trailing,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,16 @@ class ItemCard extends StatelessWidget {
       child: ListTile(
         title: Text(periodicItem.name),
         subtitle: Text('¥${periodicItem.price}'),
-        trailing: Text('${periodicItem.periodDays}日周期'),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('${periodicItem.periodDays}日周期'),
+            if (trailing != null) ...[
+              const SizedBox(width: 16), // スペースを追加
+              trailing!,
+            ],
+          ],
+        ),
         onTap: () => _editItem(context, periodicItem),
       ),
     );
