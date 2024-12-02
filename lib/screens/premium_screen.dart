@@ -35,6 +35,32 @@ class _PremiumScreenState extends State<PremiumScreen> {
     });
   }
 
+// _PremiumScreenStateクラスに新しいメソッドを追加
+  Future<void> _updateItemOrder(int oldIndex, int newIndex) async {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    setState(() {
+      final item = _items.removeAt(oldIndex);
+      _items.insert(newIndex, item);
+    });
+
+    try {
+      // データベースに並び順を保存する処理
+      for (int i = 0; i < _items.length; i++) {
+        await DatabaseHelper.instance.updateItemOrder(_items[i]['id'], i);
+      }
+    } catch (e) {
+      print('Error updating item order: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('並び順の更新に失敗しました')),
+        );
+      }
+    }
+  }
+
   Future<void> _checkAndOpenAddItem() async {
     final navigationState = context.read<NavigationState>();
 
@@ -198,8 +224,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   Expanded(
                     child: _items.isEmpty
                         ? const Center(child: Text('アイテムがありません'))
-                        : ListView.builder(
+                        : ReorderableListView.builder(
                             itemCount: _items.length,
+                            onReorder: _updateItemOrder,
                             itemBuilder: (context, index) {
                               final item = _items[index];
                               return Dismissible(
@@ -223,7 +250,13 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                 onDismissed: (direction) {
                                   _deleteItem(item, index);
                                 },
-                                child: ItemCard(item: item),
+                                child: ItemCard(
+                                  item: item,
+                                  trailing: const Icon(
+                                    Icons.drag_handle,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                               );
                             },
                           ),
